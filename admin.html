@@ -245,7 +245,7 @@
     <form class="card" id="hofForm">
       <p class="kicker">Leaderboards</p>
       <h2>Hall of Fame</h2>
-      <p class="hint">Reads the top 5 straight from each game's Firebase leaderboard. Find the project ID in Firebase under Project settings. The collection is the name you see in Firestore Database, for example <code>scores</code> or <code>weeks/2026-W45/entries</code>. Leave a game blank to hide it.</p>
+      <p class="hint">Reads the top 5 straight from each game's Firebase leaderboard. Find the project ID in Firebase under Project settings. The collection is the name you see in Firestore Database, for example <code>lives</code>. For the live weekly challenge, use <code>challenges/{active}/entries</code> and it follows whichever challenge is active. Leave a game blank to hide it.</p>
       <div id="hofBoards" style="display:flex;flex-direction:column;gap:14px"></div>
       <button class="btn red" type="submit">Save leaderboards</button>
       <div class="msg" id="hofMsg" hidden></div>
@@ -530,8 +530,10 @@
     var out = $('lbres' + i); out.hidden = false; out.className = 'lbres'; out.textContent = 'Testing…';
     api('/api/leaderboard', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(readBoard(+i))})
       .then(function(r){
-        if (!r.entries.length) { out.textContent = 'Connected, but no scores came back. Check the collection path and score field.'; return; }
-        out.innerHTML = 'Connected. Top ' + r.entries.length + ':<ol></ol>';
+        var src = r.source ? ' Reading ' + r.source + ' (' + r.scanned + ' entr' + (r.scanned === 1 ? 'y' : 'ies') + ').' : '';
+        if (!r.entries.length) { out.textContent = 'Connected, but no scores came back.' + src + ' Check the collection path and score field.'; return; }
+        out.innerHTML = 'Connected.<span></span> Top ' + r.entries.length + ':<ol></ol>';
+        out.querySelector('span').textContent = src;
         r.entries.forEach(function(x){ var li = document.createElement('li'); li.textContent = x.name + ' · ' + x.score; out.querySelector('ol').appendChild(li); });
       })
       .catch(function(err){ out.className = 'lbres err'; out.textContent = err.message; });
