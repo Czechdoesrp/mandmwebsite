@@ -262,7 +262,7 @@
     </div>
     <div class="col" id="hofCol" hidden>
       <div>
-        <p class="kicker">Leaderboards · Top 5</p>
+        <p class="kicker">This week · Top 3</p>
         <h2 class="h2">Hall of <em>Fame</em></h2>
       </div>
       <div class="hof" id="hof"></div>
@@ -493,7 +493,7 @@
       var b = boards[cur];
       var tabs = boards.length > 1 ? '<div class="hof-tabs" role="tablist">' + boards.map(function(x, i){
         return '<button type="button" role="tab" aria-selected="' + (i === cur) + '" data-i="' + i + '">' + esc(x.label) + '</button>'; }).join('') + '</div>' : '';
-      var list = b.entries.length ? '<ol>' + b.entries.map(function(e, i){
+      var list = b.entries.length ? '<ol>' + b.entries.slice(0, 3).map(function(e, i){
         return '<li><span class="rk">' + (i + 1) + '</span><span class="nm">' + esc(e.name) + '</span><span class="sc">' +
           (typeof e.score === 'number' ? e.score.toLocaleString('en-US') : esc(e.score == null ? '' : e.score)) + '</span></li>'; }).join('') + '</ol>'
         : '<p class="empty">' + (b.error ? 'Scores are offline right now.' : 'No scores yet. Be the first.') + '</p>';

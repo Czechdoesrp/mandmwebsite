@@ -1,6 +1,6 @@
 import { json, isAdmin, readContent } from "../lib/common.mjs";
 
-// GET  /api/leaderboard -> top 5 for each configured board (read from Firebase Firestore)
+// GET  /api/leaderboard -> top 3 for each configured board (read from Firebase Firestore)
 // POST /api/leaderboard (admin) body = one board's settings -> test result without saving
 //
 // Collection path examples:
@@ -71,7 +71,7 @@ async function topFive(b) {
   for (const r of rows) {
     if (seen.has(r.name)) continue;
     seen.add(r.name); entries.push(r);
-    if (entries.length === 5) break;
+    if (entries.length === 3) break;
   }
   return { entries, source, scanned: docs.length };
 }
