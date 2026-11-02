@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beyond the Alibi</title>
+<meta name="description" content="A true crime community for real cases, theories and discussion, with free detective games: Murder & Motive and Nice Quiet Neighbor.">
+<meta property="og:title" content="Beyond the Alibi">
+<meta property="og:description" content="A true crime community for real cases, theories and discussion. Free detective games inside.">
+<meta property="og:image" content="https://beyondthealibi.com/assets/og.jpg">
+<meta property="og:url" content="https://beyondthealibi.com/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://beyondthealibi.com/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0a0808">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Libre+Franklin:wght@400;600;700&family=Oswald:wght@600;700&family=Special+Elite&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  /* ---------- hero ---------- */
+  .hero{padding-block:28px 26px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+  .hero h1{margin:0;line-height:0}
+  .hero h1 img{width:min(920px,100%);height:auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.7))}
+  .hero .line{font-family:var(--f-type);font-size:clamp(15px,2.4vw,18px);color:var(--paper);margin:0;max-width:58ch;text-wrap:balance}
+  .hero .line b{color:var(--blood);font-weight:400}
+
+  /* ---------- now showing + feed ---------- */
+  .board{padding-block:46px 30px;display:flex;flex-direction:column;gap:56px}
+  .stage{display:grid;gap:34px;align-items:start}
+  @media (min-width:900px){
+    .stage.vertical{grid-template-columns:minmax(300px,390px) minmax(0,1fr)}
+  }
+  .col{display:flex;flex-direction:column;gap:14px;min-width:0}
+
+  .photo{
+    position:relative;background:var(--paper);padding:12px 12px 40px;border-radius:2px;
+    box-shadow:0 26px 50px rgba(0,0,0,.65), inset 0 0 40px rgba(110,80,40,.25);
+    transform:rotate(-1.2deg);margin-top:10px;
+  }
+  .vertical .photo{max-width:390px;width:100%;margin-inline:auto}
+  .photo::before{ /* push pin */
+    content:"";position:absolute;top:-12px;right:24px;width:24px;height:24px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ff6a6a, var(--blood) 45%, var(--blood-deep));
+    box-shadow:0 5px 8px rgba(0,0,0,.55);z-index:3;
+  }
+  .photo .cap{position:absolute;left:14px;right:14px;bottom:9px;font-family:var(--f-type);font-size:13px;color:#3a2d1c;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .screen{position:relative;background:#000;overflow:hidden;aspect-ratio:9/16;max-width:100%}
+  .horizontal .screen{aspect-ratio:16/9}
+  .screen video,.screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;object-fit:cover}
+  .horizontal .screen video{object-fit:contain}
+  .sound{
+    position:absolute;right:12px;bottom:12px;z-index:2;border:1px solid rgba(236,228,212,.4);
+    background:rgba(10,8,8,.78);color:var(--bone);font:600 13px var(--f-body);
+    padding:9px 14px;border-radius:999px;cursor:pointer;backdrop-filter:blur(6px)
+  }
+
+  /* feed */
+  .feed-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+  .feed{display:flex;flex-direction:column;gap:12px;margin:0;padding:0;list-style:none}
+  @media (min-width:900px){
+    .vertical .feed{max-height:640px;overflow-y:auto;padding-right:6px;scrollbar-width:thin;scrollbar-color:var(--rule) transparent}
+  }
+  .post{
+    display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;
+    background:var(--board);border:1px solid var(--rule);border-radius:4px;padding:14px 16px;
+  }
+  .post .av{width:40px;height:40px;border-radius:50%;background:var(--board-2)}
+  .post .who{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .post .name{font-weight:700;font-size:15px}
+  .post .bot{font-size:10px;font-weight:700;background:var(--discord);color:#fff;border-radius:3px;padding:1px 5px;letter-spacing:.04em}
+  .post time{font-family:var(--f-type);font-size:12px;color:var(--muted)}
+  .post .body{font-size:15px;line-height:1.5;margin-top:3px;overflow-wrap:anywhere}
+  .post .body a{color:#8fb3ff}
+  .post .body code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--board-2);padding:1px 5px;border-radius:3px}
+  .post .body pre{background:var(--board-2);padding:10px;border-radius:4px;overflow-x:auto;white-space:pre-wrap}
+  .post .body blockquote{margin:6px 0;padding-left:10px;border-left:3px solid var(--rule);color:var(--muted)}
+  .post .body h3,.post .body h4,.post .body h5{font-family:var(--f-display);font-weight:400;margin:6px 0 2px;line-height:1.15}
+  .post .body h3{font-size:24px}.post .body h4{font-size:20px}.post .body h5{font-size:17px}
+  .post .body small{color:var(--muted);font-size:12px}
+  .post .body .emoji{width:20px;height:20px;vertical-align:-4px}
+  .post .body .spoiler{background:var(--bone);color:transparent;border-radius:3px;cursor:pointer}
+  .post .body .spoiler.open{background:var(--board-2);color:inherit}
+  .post .media{display:grid;gap:8px;margin-top:10px}
+  .post .media img,.post .media video{width:100%;max-height:360px;object-fit:cover;border-radius:4px;display:block;background:var(--board-2)}
+  .embed{margin-top:10px;background:var(--board-2);border-left:4px solid var(--rule);border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+  .embed .prov{font-size:12px;color:var(--muted)}
+  .embed .t{font-weight:700}
+  .embed .d{font-size:14px;color:var(--muted)}
+  .embed img{border-radius:4px;max-height:280px;object-fit:cover;margin-top:4px}
+  .note{background:var(--board);border:1px dashed var(--rule);border-radius:4px;padding:20px;color:var(--muted);font-size:15px}
+  .note strong{color:var(--bone);font-family:var(--f-display);font-weight:400;font-size:22px;display:block;margin-bottom:4px}
+  .skel{height:84px;border-radius:4px;background:linear-gradient(90deg,var(--board),var(--board-2),var(--board));background-size:200% 100%;animation:sk 1.4s ease infinite}
+  @keyframes sk{to{background-position:-200% 0}}
+
+  /* ---------- games: evidence bags ---------- */
+  .games-head{display:flex;flex-direction:column;gap:2px}
+  .games{display:grid;gap:22px;margin-top:20px}
+  @media (min-width:760px){.games{grid-template-columns:1fr 1fr}}
+  .bag{
+    display:flex;flex-direction:column;text-decoration:none;color:var(--bone);
+    background:var(--board);border:1px solid var(--rule);border-radius:4px;overflow:hidden;
+    transition:transform .15s ease,border-color .15s ease;
+  }
+  .bag:hover{transform:translateY(-3px);border-color:var(--paper)}
+  .bag-top{background:var(--blood);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:8px 16px;
+    font-family:var(--f-tape);font-weight:700;letter-spacing:.24em;font-size:14px}
+  .bag-top .zip{flex:1;height:6px;margin:0 14px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.55) 0 6px,transparent 6px 10px);border-radius:3px}
+  .fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--rule)}
+  .fields div{padding:9px 16px;border-right:1px solid var(--rule);min-width:0}
+  .fields div:last-child{border-right:0}
+  .fields dt{font-family:var(--f-type);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .fields dd{margin:0;font-family:var(--f-type);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bag-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .bag h3{font-family:var(--f-display);font-weight:400;font-size:clamp(32px,4.4vw,42px);line-height:1;margin:0}
+  .bag .role{font-family:var(--f-type);color:var(--paper);font-size:15px;margin:0}
+  .bag p{margin:0;color:var(--muted);font-size:15px;max-width:52ch}
+  .bag .btn{margin-top:auto;align-self:stretch}
+  .bag.b h3{color:var(--blood)}
+  .bag.b .bag-top{background:#26090b;color:var(--blood);border-bottom:1px solid var(--blood-deep)}
+  .bag.b .bag-top .zip{background:repeating-linear-gradient(90deg,rgba(195,20,29,.6) 0 6px,transparent 6px 10px)}
+
+
+  /* ---------- case of the week: manila case folder ---------- */
+  .cotw{padding-top:34px}
+  .folder{
+    position:relative;background:var(--paper);color:var(--paper-ink);border-radius:0 6px 6px 6px;
+    padding:26px 22px 24px;display:grid;gap:24px;
+    box-shadow:0 30px 60px rgba(0,0,0,.6), inset 0 0 60px rgba(120,90,40,.28);
+  }
+  .folder::before{
+    content:"CASE OF THE WEEK";position:absolute;left:0;top:-32px;height:32px;display:flex;align-items:center;
+    background:var(--paper);color:var(--paper-ink);padding:0 18px;border-radius:6px 6px 0 0;
+    font-family:var(--f-tape);font-weight:700;font-size:13px;letter-spacing:.2em;
+  }
+  @media (min-width:780px){.folder.has-img{grid-template-columns:minmax(220px,300px) minmax(0,1fr);padding:30px}}
+  .folder .pic{position:relative;background:#f4efe4;padding:10px 10px 34px;transform:rotate(-2deg);box-shadow:0 12px 24px rgba(0,0,0,.35);align-self:start;max-width:320px;width:100%;justify-self:center}
+  .folder .pic::before{content:"";position:absolute;top:-10px;left:50%;width:22px;height:22px;margin-left:-11px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #ff6a6a, var(--blood) 45%, var(--blood-deep));box-shadow:0 4px 7px rgba(0,0,0,.5)}
+  .folder .pic img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;filter:grayscale(.35) contrast(1.05)}
+  .folder .pic span{position:absolute;left:10px;right:10px;bottom:9px;font-family:var(--f-type);font-size:13px;color:#4a3a24;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .folder .txt{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .folder .lbl{font-family:var(--f-type);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#7a6446;margin:0}
+  .folder h3{font-family:var(--f-display);font-weight:400;font-size:clamp(34px,5.4vw,52px);line-height:1;margin:0;color:#1d140b;text-wrap:balance;padding-right:110px}
+  .folder .facts{display:flex;flex-wrap:wrap;gap:6px 22px;margin:0;font-family:var(--f-type);font-size:15px}
+  .folder .facts dt{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7a6446}
+  .folder .facts dd{margin:0}
+  .folder .summary{margin:0;font-size:16px;line-height:1.6;color:#3a2c1b;max-width:62ch;white-space:pre-line}
+  .folder .btn{align-self:flex-start;margin-top:4px}
+  .stamp{
+    align-self:flex-start;font-family:var(--f-tape);font-weight:700;font-size:17px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--blood);border:3px solid var(--blood);border-radius:4px;padding:2px 10px;transform:rotate(8deg);opacity:.85;
+    mix-blend-mode:multiply;
+  }
+  @media (min-width:780px){.stamp{position:absolute;top:18px;right:18px}}
+  @media (max-width:779px){.folder .pic{max-width:250px}.folder h3{padding-right:0}}
+  .stamp.solved{color:#24613a;border-color:#24613a}
+
+  /* ---------- docket + hall of fame ---------- */
+  .duo{display:grid;gap:40px}
+  @media (min-width:880px){.duo.both{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}}
+  .duo .col{gap:16px}
+  .docket{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+  .ev{display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;align-items:start;background:var(--board);border:1px solid var(--rule);border-radius:4px;padding:14px}
+  .ev .date{border:1px solid var(--rule);border-radius:3px;text-align:center;padding:6px 0 7px;background:var(--night)}
+  .ev .date b{display:block;font-family:var(--f-tape);font-size:12px;letter-spacing:.16em;color:var(--blood)}
+  .ev .date strong{display:block;font-family:var(--f-display);font-weight:400;font-size:32px;line-height:1}
+  .ev .date span{display:block;font-family:var(--f-type);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .ev h3{margin:0;font-size:17px;font-weight:700;line-height:1.3}
+  .ev .meta{font-family:var(--f-type);font-size:13px;color:var(--paper);margin:3px 0 0}
+  .ev p{margin:6px 0 0;color:var(--muted);font-size:14px}
+  .ev a.more{display:inline-block;margin-top:6px;font-size:14px;font-weight:600;color:var(--tape);text-decoration:none}
+  .ev a.more:hover{text-decoration:underline}
+
+  .hof{background:var(--board);border:1px solid var(--rule);border-radius:4px;overflow:hidden}
+  .hof-tabs{display:flex;border-bottom:1px solid var(--rule)}
+  .hof-tabs button{flex:1;min-width:0;background:none;border:0;color:var(--muted);font:600 13px var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:13px 8px;cursor:pointer;border-bottom:3px solid transparent}
+  .hof-tabs button[aria-selected="true"]{color:var(--bone);border-bottom-color:var(--blood)}
+  .hof ol{list-style:none;margin:0;padding:6px 0}
+  .hof li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 16px}
+  .hof li + li{border-top:1px solid var(--rule)}
+  .hof .rk{font-family:var(--f-display);font-size:28px;line-height:1;color:var(--muted);text-align:center}
+  .hof li:first-child .rk{color:var(--tape)}
+  .hof .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hof .sc{font-family:var(--f-type);font-variant-numeric:tabular-nums;color:var(--paper)}
+  .hof .empty{padding:18px 16px;color:var(--muted);font-size:15px}
+
+  /* ---------- who we are ---------- */
+  .code{display:grid;gap:28px;border-top:1px solid var(--rule);padding-top:40px}
+  @media (min-width:880px){.code{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px}}
+  .code .body{margin:12px 0 0;color:var(--bone);font-size:17px;line-height:1.65;max-width:58ch;white-space:pre-line}
+  .rules ul{list-style:none;margin:0;padding:0}
+  .rules{align-self:start;background:var(--board);border:1px solid var(--rule);border-radius:4px}
+  .rules h3{margin:0;padding:14px 18px;border-bottom:1px solid var(--rule);font-family:var(--f-tape);font-weight:700;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--tape)}
+  .rules li{padding:13px 18px 13px 44px;position:relative;font-size:15px}
+  .rules li + li{border-top:1px solid var(--rule)}
+  .rules li::before{content:"";position:absolute;left:18px;top:20px;width:10px;height:10px;background:var(--blood);transform:rotate(45deg)}
+
+  .socials{display:flex;flex-wrap:wrap;gap:8px}
+  .socials a{font:600 13px var(--f-body);letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--bone);border:1px solid var(--rule);border-radius:3px;padding:9px 12px}
+  .socials a:hover{border-color:var(--paper)}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--rule);margin-top:20px}
+  footer .wrap{padding-block:26px 34px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+  footer img{width:220px;height:auto;opacity:.9}
+  footer small{font-family:var(--f-type);color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+
+<header class="wrap hero">
+  <h1><img src="/assets/logo.webp" width="1400" height="467" alt="Beyond The Alibi .com"></h1>
+  <p class="line">A true crime community for people who look <b>beyond the alibi.</b> Real cases, theories and discussion every day, plus free detective games when you want to work a case yourself.</p>
+</header>
+
+<div class="tape-wrap"><div class="tape tilt" aria-hidden="true">
+  <div class="run">
+    <span>Crime scene do not cross</span><span>True crime community</span><span>Cases &amp; theories</span><span>Free games inside</span>
+    <span>Crime scene do not cross</span><span>True crime community</span><span>Cases &amp; theories</span><span>Free games inside</span>
+    <span>Crime scene do not cross</span><span>True crime community</span><span>Cases &amp; theories</span><span>Free games inside</span>
+    <span>Crime scene do not cross</span><span>True crime community</span><span>Cases &amp; theories</span><span>Free games inside</span>
+  </div>
+</div></div>
+
+<main class="wrap board">
+  <section class="stage vertical" id="stage" aria-label="Now showing and case updates">
+    <div class="col">
+      <p class="kicker"><span class="dot"></span>Now showing</p>
+      <h2 class="h2" id="vtitle">The <em>Trailer</em></h2>
+      <div class="photo">
+        <div class="screen" id="screen"></div>
+        <div class="cap" id="vcap">Exhibit 01 · Surveillance footage</div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="feed-head">
+        <div>
+          <p class="kicker">From the Discord · #updates</p>
+          <h2 class="h2">Case <em>Updates</em></h2>
+        </div>
+        <a class="btn discord" id="joinTop" href="https://discord.gg/murderandmotive" target="_blank" rel="noopener">Join the Discord</a>
+      </div>
+      <ol class="feed" id="feed" aria-live="polite">
+        <li class="skel"></li><li class="skel"></li><li class="skel"></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="cotw" id="cotw" aria-label="Case of the week" hidden></section>
+
+  <section class="duo" id="duo" hidden>
+    <div class="col" id="docketCol" hidden>
+      <div>
+        <p class="kicker">Events · Times shown in your time zone</p>
+        <h2 class="h2">On the <em>Docket</em></h2>
+      </div>
+      <ol class="docket" id="docket"></ol>
+    </div>
+    <div class="col" id="hofCol" hidden>
+      <div>
+        <p class="kicker">Leaderboards · Top 5</p>
+        <h2 class="h2">Hall of <em>Fame</em></h2>
+      </div>
+      <div class="hof" id="hof"></div>
+    </div>
+  </section>
+
+  <section class="code" id="about" aria-labelledby="aboutTitle">
+    <div>
+      <p class="kicker">The community</p>
+      <h2 class="h2" id="aboutTitle">Who we are</h2>
+      <p class="body" id="aboutBody">Beyond the Alibi is a true crime community built around the cases themselves: the investigations, the evidence, and the questions that never got answered.</p>
+      <p style="margin:18px 0 0"><a class="btn discord" id="joinAbout" href="https://discord.gg/murderandmotive" target="_blank" rel="noopener">Join the Discord</a></p>
+    </div>
+    <div class="rules" id="rulesBox"><h3>Our code</h3><ul id="rules"></ul></div>
+  </section>
+
+  <section id="games" aria-label="Games">
+    <div class="games-head">
+      <p class="kicker">Bonus · Free to play</p>
+      <h2 class="h2">The <em>Games</em></h2>
+    </div>
+    <div class="games">
+      <a class="bag a" href="https://murderandmotives.netlify.app/" target="_blank" rel="noopener">
+        <div class="bag-top"><span>EVIDENCE</span><span class="zip"></span><span>A</span></div>
+        <dl class="fields">
+          <div><dt>Item</dt><dd>Exhibit A</dd></div>
+          <div><dt>Role</dt><dd>Detective</dd></div>
+          <div><dt>Status</dt><dd>Open case</dd></div>
+        </dl>
+        <div class="bag-body">
+          <h3>Murder &amp; Motive</h3>
+          <p class="role">You're the detective.</p>
+          <p>Every killer is randomly generated, so no two cases are alike. Work the clues, read the letters, run the stakeouts, and make the arrest before they strike again.</p>
+          <span class="btn">Open the case →</span>
+        </div>
+      </a>
+      <a class="bag b" href="https://nicequietneighbor.netlify.app/" target="_blank" rel="noopener">
+        <div class="bag-top"><span>EVIDENCE</span><span class="zip"></span><span>B</span></div>
+        <dl class="fields">
+          <div><dt>Item</dt><dd>Exhibit B</dd></div>
+          <div><dt>Role</dt><dd>The killer</dd></div>
+          <div><dt>Status</dt><dd>At large</dd></div>
+        </dl>
+        <div class="bag-body">
+          <h3>Nice Quiet Neighbor</h3>
+          <p class="role">You're the one they're hunting.</p>
+          <p>Live a whole life from 18 to the end. Keep the job, keep the friends, keep the secret, and keep your alibi straight.</p>
+          <span class="btn red">Become the neighbor →</span>
+        </div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="/assets/logo-800.webp" width="800" height="267" alt="Beyond The Alibi">
+    <nav class="socials" id="socials" aria-label="Social links"><a href="https://discord.gg/murderandmotive" target="_blank" rel="noopener">Discord</a></nav>
+    <small>True crime community · Free games inside</small>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var DEMO = !!window.BTA_DEMO;
+  var $ = function(id){ return document.getElementById(id); };
+  var esc = function(s){ return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); };
+
+  /* ---------- video ---------- */
+  function renderVideo(cfg){
+    var v = (cfg && cfg.video) || {source:'default', orientation:'vertical'};
+    var stage = $('stage'), screen = $('screen');
+    stage.classList.toggle('vertical', v.orientation !== 'horizontal');
+    stage.classList.toggle('horizontal', v.orientation === 'horizontal');
+    if (v.title) { $('vtitle').textContent = v.title; $('vcap').textContent = 'Exhibit 01 · ' + v.title; }
+
+    if (v.source === 'youtube' && v.youtubeId) {
+      var id = encodeURIComponent(v.youtubeId);
+      var src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&mute=1&loop=1&playlist=' + id +
+        '&playsinline=1&rel=0&modestbranding=1' + (v.start ? '&start=' + (+v.start) : '');
+      screen.innerHTML = '<iframe src="' + src + '" title="' + esc(v.title || 'Beyond the Alibi video') +
+        '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
+      return;
+    }
+    var file = (v.source === 'upload' && v.uploadId) ? '/api/video/' + encodeURIComponent(v.uploadId) : 'assets/trailer.mp4';
+    var poster = v.source === 'upload' ? '' : ' poster="assets/trailer-poster.jpg"';
+    screen.innerHTML = '<video id="vid" src="' + file + '"' + poster + ' autoplay muted loop playsinline preload="metadata"></video>' +
+      '<button class="sound" id="sound" type="button" aria-label="Turn sound on">🔇 Tap for sound</button>';
+    var vid = $('vid'), btn = $('sound');
+    btn.addEventListener('click', function(){
+      vid.muted = !vid.muted;
+      if (!vid.muted) { vid.currentTime = 0; vid.play(); }
+      btn.textContent = vid.muted ? '🔇 Tap for sound' : '🔊 Sound on';
+      btn.setAttribute('aria-label', vid.muted ? 'Turn sound on' : 'Mute');
+    });
+    vid.addEventListener('click', function(){ btn.click(); });
+  }
+
+  /* ---------- Discord markdown (the parts people actually use) ---------- */
+  function md(src){
+    var blocks = [];
+    var s = esc(src).replace(/```(?:\w+\n)?([\s\S]*?)```/g, function(_, c){ blocks.push('<pre><code>' + c.replace(/^\n|\n$/g,'') + '</code></pre>'); return '\u0000' + (blocks.length-1) + '\u0000'; });
+    s = s.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    s = s.split('\n').map(function(line){
+      if (/^### /.test(line)) return '<h5>' + line.slice(4) + '</h5>';
+      if (/^## /.test(line)) return '<h4>' + line.slice(3) + '</h4>';
+      if (/^# /.test(line)) return '<h3>' + line.slice(2) + '</h3>';
+      if (/^-# /.test(line)) return '<small>' + line.slice(3) + '</small>';
+      if (/^&gt; /.test(line)) return '<blockquote>' + line.slice(5) + '</blockquote>';
+      if (/^\s*[-*] /.test(line)) return '• ' + line.replace(/^\s*[-*] /, '');
+      return line;
+    }).join('\n');
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener nofollow">$1</a>')
+         .replace(/(^|[\s(])(https?:\/\/[^\s<]+[^\s<.,:;"')\]])/g, '$1<a href="$2" target="_blank" rel="noopener nofollow">$2</a>')
+         .replace(/\*\*\*([^*]+)\*\*\*/g, '<b><i>$1</i></b>')
+         .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+         .replace(/__([^_]+)__/g, '<u>$1</u>')
+         .replace(/(^|[^*\w])\*([^*\n]+)\*/g, '$1<i>$2</i>')
+         .replace(/(^|[^_\w])_([^_\n]+)_(?!\w)/g, '$1<i>$2</i>')
+         .replace(/~~([^~]+)~~/g, '<s>$1</s>')
+         .replace(/\|\|([^|]+)\|\|/g, '<span class="spoiler" title="Spoiler — tap to reveal">$1</span>')
+         .replace(/&lt;(a?):(\w+):(\d+)&gt;/g, function(_, a, name, id){ return '<img class="emoji" alt=":' + name + ':" src="https://cdn.discordapp.com/emojis/' + id + '.' + (a ? 'gif' : 'webp') + '?size=48">'; });
+    s = s.replace(/\n/g, '<br>').replace(/(<\/(h3|h4|h5|blockquote)>)<br>/g, '$1');
+    return s.replace(/\u0000(\d+)\u0000/g, function(_, i){ return blocks[+i]; });
+  }
+
+  function ago(iso){
+    var d = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (d < 60) return 'just now';
+    if (d < 3600) return Math.floor(d/60) + 'm ago';
+    if (d < 86400) return Math.floor(d/3600) + 'h ago';
+    if (d < 86400*7) return Math.floor(d/86400) + 'd ago';
+    return new Date(iso).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  }
+
+  function renderFeed(data){
+    var feed = $('feed');
+    if (data && data.invite) { $('joinTop').href = data.invite; }
+    if (!data || !data.configured) {
+      feed.innerHTML = '<li class="note"><strong>No updates yet</strong>Case updates from the Discord will show up here. Join the server to get them first.</li>';
+      return;
+    }
+    if (data.error || !data.messages.length) {
+      feed.innerHTML = '<li class="note"><strong>' + (data.error ? 'Updates are offline' : 'No updates yet') + '</strong>' +
+        (data.error ? 'Couldn’t load the latest posts right now. Check back in a minute.' : 'New posts in #updates will show up here.') + '</li>';
+      return;
+    }
+    feed.innerHTML = data.messages.map(function(m){
+      var media = m.images.slice(0,4).map(function(i){ return '<img loading="lazy" src="' + esc(i.url) + '" alt="Image posted in Discord"' + (i.width ? ' width="' + i.width + '" height="' + i.height + '"' : '') + '>'; }).join('') +
+                  m.videos.slice(0,1).map(function(v){ return '<video src="' + esc(v.url) + '" controls playsinline preload="metadata"></video>'; }).join('');
+      var embeds = m.embeds.slice(0,2).map(function(e){
+        return '<div class="embed"' + (e.color ? ' style="border-left-color:' + esc(e.color) + '"' : '') + '>' +
+          (e.provider ? '<span class="prov">' + esc(e.provider) + '</span>' : '') +
+          (e.title ? (e.url ? '<a class="t" href="' + esc(e.url) + '" target="_blank" rel="noopener nofollow">' + esc(e.title) + '</a>' : '<span class="t">' + esc(e.title) + '</span>') : '') +
+          (e.description ? '<div class="d">' + md(e.description) + '</div>' : '') +
+          (e.image ? '<img loading="lazy" src="' + esc(e.image) + '" alt="">' : '') + '</div>';
+      }).join('');
+      return '<li class="post"><img class="av" loading="lazy" src="' + esc(m.author.avatar) + '" alt="" width="40" height="40">' +
+        '<div><div class="who"><span class="name">' + esc(m.author.name) + '</span>' + (m.author.bot ? '<span class="bot">BOT</span>' : '') +
+        '<time datetime="' + esc(m.timestamp) + '" title="' + esc(new Date(m.timestamp).toLocaleString()) + '">' + ago(m.timestamp) + (m.edited ? ' · edited' : '') + '</time></div>' +
+        (m.content ? '<div class="body">' + md(m.content) + '</div>' : '') +
+        (media ? '<div class="media">' + media + '</div>' : '') + embeds + '</div></li>';
+    }).join('');
+  }
+  document.addEventListener('click', function(e){ if (e.target.classList && e.target.classList.contains('spoiler')) e.target.classList.toggle('open'); });
+
+
+  /* ---------- community content ---------- */
+  function renderContent(c){
+    if (!c) return;
+    var cw = c.caseOfWeek || {};
+    var box = $('cotw');
+    if (cw.enabled && cw.name) {
+      var img = cw.imageId ? '/api/image/' + encodeURIComponent(cw.imageId) : cw.imageUrl;
+      if (DEMO && cw.imageId) img = cw.imageId;
+      var facts = [['Location', cw.location], ['Years', cw.years]].filter(function(f){ return f[1]; })
+        .map(function(f){ return '<div><dt>' + f[0] + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('');
+      box.innerHTML = '<div class="folder' + (img ? ' has-img' : '') + '">' +
+        (img ? '<figure class="pic" style="margin:0"><img src="' + esc(img) + '" alt="' + esc(cw.name) + '" loading="lazy"><span>' + esc(cw.name) + '</span></figure>' : '') +
+        '<div class="txt"><span class="stamp' + (cw.status === 'Solved' ? ' solved' : '') + '">' + esc(cw.status || 'Unsolved') + '</span><p class="lbl">This week in the Discord</p><h3>' + esc(cw.name) + '</h3>' +
+        (facts ? '<dl class="facts">' + facts + '</dl>' : '') +
+        (cw.summary ? '<p class="summary">' + esc(cw.summary) + '</p>' : '') +
+        (cw.threadUrl ? '<a class="btn discord" href="' + esc(cw.threadUrl) + '" target="_blank" rel="noopener">Join the discussion</a>' : '') +
+        '</div></div>';
+      box.hidden = false;
+    } else { box.hidden = true; }
+
+    var now = Date.now();
+    var evs = (c.events || []).filter(function(e){ return Date.parse(e.when) > now - 2*3600*1000; }).slice(0, 5);
+    if (evs.length) {
+      $('docket').innerHTML = evs.map(function(e){
+        var d = new Date(e.when);
+        var time = d.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', timeZoneName:'short'});
+        return '<li class="ev"><div class="date"><b>' + d.toLocaleDateString('en-US',{month:'short'}).toUpperCase() + '</b><strong>' + d.getDate() +
+          '</strong><span>' + d.toLocaleDateString('en-US',{weekday:'short'}) + '</span></div><div><h3>' + esc(e.title) + '</h3>' +
+          '<p class="meta">' + esc(time) + (e.where ? ' · ' + esc(e.where) : '') + '</p>' +
+          (e.details ? '<p>' + esc(e.details) + '</p>' : '') +
+          (e.link ? '<a class="more" href="' + esc(e.link) + '" target="_blank" rel="noopener">Details →</a>' : '') + '</div></li>';
+      }).join('');
+      $('docketCol').hidden = false;
+    }
+    syncDuo();
+
+    var a = c.about || {};
+    if (a.title) $('aboutTitle').textContent = a.title;
+    if (a.body) $('aboutBody').textContent = a.body;
+    $('rules').innerHTML = (a.rules || []).map(function(r){ return '<li>' + esc(r) + '</li>'; }).join('');
+    $('rulesBox').hidden = !(a.rules || []).length;
+
+    var names = {tiktok:'TikTok', youtube:'YouTube', instagram:'Instagram', x:'X', twitch:'Twitch'};
+    var so = c.socials || {};
+    var links = Object.keys(names).filter(function(k){ return so[k]; })
+      .map(function(k){ return '<a href="' + esc(so[k]) + '" target="_blank" rel="noopener">' + names[k] + '</a>'; }).join('');
+    $('socials').innerHTML = links + '<a href="' + esc($('joinTop').href) + '" target="_blank" rel="noopener">Discord</a>';
+  }
+
+  function syncDuo(){
+    var d = !$('docketCol').hidden, h = !$('hofCol').hidden;
+    $('duo').hidden = !(d || h);
+    $('duo').classList.toggle('both', d && h);
+  }
+
+  function renderBoards(data){
+    var boards = ((data && data.boards) || []);
+    if (!boards.length) return;
+    var hof = $('hof'), cur = 0;
+    function draw(){
+      var b = boards[cur];
+      var tabs = boards.length > 1 ? '<div class="hof-tabs" role="tablist">' + boards.map(function(x, i){
+        return '<button type="button" role="tab" aria-selected="' + (i === cur) + '" data-i="' + i + '">' + esc(x.label) + '</button>'; }).join('') + '</div>' : '';
+      var list = b.entries.length ? '<ol>' + b.entries.map(function(e, i){
+        return '<li><span class="rk">' + (i + 1) + '</span><span class="nm">' + esc(e.name) + '</span><span class="sc">' +
+          (typeof e.score === 'number' ? e.score.toLocaleString('en-US') : esc(e.score == null ? '' : e.score)) + '</span></li>'; }).join('') + '</ol>'
+        : '<p class="empty">' + (b.error ? 'Scores are offline right now.' : 'No scores yet. Be the first.') + '</p>';
+      hof.innerHTML = (boards.length > 1 ? tabs : '<div class="hof-tabs"><button type="button" aria-selected="true">' + esc(b.label) + '</button></div>') + list;
+    }
+    hof.addEventListener('click', function(e){ var t = e.target.closest('button[data-i]'); if (t) { cur = +t.dataset.i; draw(); } });
+    draw();
+    $('hofCol').hidden = false; syncDuo();
+  }
+
+  /* ---------- load ---------- */
+  if (DEMO) { renderVideo(window.BTA_DEMO_CONFIG); renderFeed(window.BTA_DEMO_FEED); renderContent(window.BTA_DEMO_CONTENT); renderBoards(window.BTA_DEMO_LB); return; }
+
+  fetch('/api/config').then(function(r){ return r.ok ? r.json() : null; })
+    .then(renderVideo).catch(function(){ renderVideo(null); });
+  fetch('/api/discord').then(function(r){ return r.ok ? r.json() : {configured:true, error:'offline', messages:[]}; })
+    .then(renderFeed).catch(function(){ renderFeed({configured:true, error:'offline', messages:[]}); });
+  fetch('/api/content').then(function(r){ return r.ok ? r.json() : null; }).then(renderContent).catch(function(){});
+  fetch('/api/leaderboard').then(function(r){ return r.ok ? r.json() : null; }).then(renderBoards).catch(function(){});
+})();
+</script>
+</body>
+</html>

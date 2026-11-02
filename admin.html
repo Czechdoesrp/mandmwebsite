@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Beyond the Alibi Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Libre+Franklin:wght@400;600;700&family=Oswald:wght@600;700&family=Special+Elite&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+  .top{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-block:18px;flex-wrap:wrap}
+  .top img{width:220px;height:auto}
+  .top .actions{display:flex;gap:10px;flex-wrap:wrap}
+  main.wrap{padding-block:30px 60px;display:flex;flex-direction:column;gap:22px;max-width:760px}
+  .card{background:var(--board);border:1px solid var(--rule);border-radius:4px;padding:22px;display:flex;flex-direction:column;gap:14px}
+  .card h2{font-family:var(--f-display);font-weight:400;font-size:30px;margin:0;line-height:1.05}
+  label,.lbl{font-family:var(--f-type);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px}
+  input[type=text],input[type=url],input[type=password],select{
+    width:100%;font:16px var(--f-body);color:var(--bone);background:var(--night);border:1px solid var(--rule);border-radius:3px;padding:12px 12px;
+  }
+  input:focus,select:focus{outline:2px solid var(--tape);outline-offset:1px}
+  .row{display:grid;gap:14px}
+  @media (min-width:620px){.row.two{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}}
+  .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+  .tabs input{position:absolute;opacity:0;pointer-events:none}
+  .tabs label{margin:0;text-align:center;padding:12px 6px;cursor:pointer;border-right:1px solid var(--rule);font-size:12px;color:var(--bone);background:var(--night)}
+  .tabs label:last-of-type{border-right:0}
+  .tabs input:checked + label{background:var(--tape);color:var(--tape-ink)}
+  .tabs input:focus-visible + label{outline:2px solid var(--tape);outline-offset:-4px}
+  .pane{display:flex;flex-direction:column;gap:14px}
+  .drop{border:2px dashed var(--rule);border-radius:4px;padding:22px;text-align:center;cursor:pointer;color:var(--muted)}
+  .drop{text-transform:none;letter-spacing:0;font-family:var(--f-body);font-size:14px;margin:0}
+  .drop.over{border-color:var(--tape);color:var(--bone)}
+  .drop strong{display:block;color:var(--bone);font-size:16px;margin-bottom:4px}
+  .drop input{display:none}
+  .bar{height:10px;background:var(--night);border:1px solid var(--rule);border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--tape);transition:width .2s ease}
+  .msg{font-size:15px;padding:12px 14px;border-radius:3px;background:var(--night);border:1px solid var(--rule)}
+  .msg.ok{border-color:#2f7d4a;color:#9fe0b2}
+  .msg.err{border-color:var(--blood);color:#ff9a9a}
+  .live{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+  .live .thumb{width:96px;aspect-ratio:9/16;background:#000;border-radius:3px;overflow:hidden;position:relative}
+  .live .thumb.h{width:160px;aspect-ratio:16/9}
+  .live .thumb img,.live .thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .live dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;font-size:15px}
+  .live dt{font-family:var(--f-type);color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:.08em}
+  .live dd{margin:0;overflow-wrap:anywhere}
+  .hint{font-size:14px;color:var(--muted);margin:0}
+  .hint code{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--night);padding:1px 5px;border-radius:3px;color:var(--bone)}
+  .status{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+  .status::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--muted)}
+  .status.on::before{background:#3fbf6a}
+  .status.off::before{background:var(--blood)}
+
+  textarea{width:100%;font:16px/1.5 var(--f-body);color:var(--bone);background:var(--night);border:1px solid var(--rule);border-radius:3px;padding:12px;resize:vertical;min-height:110px}
+  textarea:focus{outline:2px solid var(--tape);outline-offset:1px}
+  input[type=datetime-local]{width:100%;font:16px var(--f-body);color:var(--bone);background:var(--night);border:1px solid var(--rule);border-radius:3px;padding:11px 12px}
+  .row.three{grid-template-columns:1fr}
+  @media (min-width:620px){.row.three{grid-template-columns:repeat(3,minmax(0,1fr))}.row.half{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .check{display:flex;align-items:center;gap:10px;text-transform:none;letter-spacing:0;font-family:var(--f-body);font-size:16px;color:var(--bone);margin:0;cursor:pointer}
+  .check input{width:20px;height:20px;accent-color:var(--blood)}
+  .jump{display:flex;flex-wrap:wrap;gap:8px}
+  .jump a{font:600 12px var(--f-body);letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--bone);border:1px solid var(--rule);border-radius:999px;padding:7px 12px;background:var(--board)}
+  .jump a:hover{border-color:var(--tape)}
+  .imgrow{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .imgrow img{width:90px;height:112px;object-fit:cover;border-radius:3px;border:1px solid var(--rule)}
+  .file-btn{position:relative;overflow:hidden}
+  .file-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .evlist{list-style:none;margin:0;padding:0;border:1px solid var(--rule);border-radius:3px}
+  .evlist li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 12px}
+  .evlist li + li{border-top:1px solid var(--rule)}
+  .evlist li.past{opacity:.5}
+  .evlist .t{font-weight:600}
+  .evlist .w{font-family:var(--f-type);font-size:13px;color:var(--muted)}
+  .evlist .acts{display:flex;gap:6px}
+  .mini{font:600 12px var(--f-body);letter-spacing:.05em;text-transform:uppercase;background:none;color:var(--bone);border:1px solid var(--rule);border-radius:3px;padding:7px 10px;cursor:pointer}
+  .mini:hover{border-color:var(--tape)}
+  .mini.del:hover{border-color:var(--blood);color:#ff9a9a}
+  fieldset{border:1px solid var(--rule);border-radius:3px;padding:16px;margin:0;display:flex;flex-direction:column;gap:12px;min-width:0}
+  legend{font-family:var(--f-tape);font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:13px;color:var(--tape);padding:0 6px}
+  .lbres{font-size:14px;margin:0;padding:10px 12px;background:var(--night);border:1px solid var(--rule);border-radius:3px}
+  .lbres ol{margin:4px 0 0;padding-left:22px}
+  .lbres.err{border-color:var(--blood);color:#ff9a9a}
+  .btnrow{display:flex;gap:10px;flex-wrap:wrap}
+  #panel{display:contents}
+  #login{max-width:440px;margin:8vh auto 0}
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <a href="/"><img src="/assets/logo-800.webp" width="800" height="267" alt="Beyond The Alibi home"></a>
+  <div class="actions" id="topActions" hidden>
+    <a class="btn ghost" href="/" target="_blank" rel="noopener">View site</a>
+    <button class="btn ghost" id="logout" type="button">Lock</button>
+  </div>
+</header>
+<div class="tape" aria-hidden="true"><div class="run"><span>Authorized personnel only</span><span>Authorized personnel only</span><span>Authorized personnel only</span><span>Authorized personnel only</span><span>Authorized personnel only</span><span>Authorized personnel only</span><span>Authorized personnel only</span><span>Authorized personnel only</span></div></div>
+
+<main class="wrap">
+  <!-- login -->
+  <form class="card" id="login">
+    <p class="kicker">Evidence room</p>
+    <h2>Admin sign-in</h2>
+    <div>
+      <label for="pw">Password</label>
+      <input type="password" id="pw" autocomplete="current-password" required>
+    </div>
+    <button class="btn red" type="submit" id="loginBtn">Unlock</button>
+    <div class="msg err" id="loginMsg" hidden></div>
+  </form>
+
+  <!-- panel -->
+  <div id="panel" hidden>
+
+    <nav class="jump" aria-label="Sections">
+      <a href="#videoForm">Video</a><a href="#caseForm">Case of the Week</a><a href="#eventsCard">Events</a><a href="#hofForm">Hall of Fame</a><a href="#aboutForm">Who we are</a><a href="#socialForm">Social links</a><a href="#feedCard">Discord feed</a>
+    </nav>
+    <section class="card">
+      <p class="kicker"><span class="dot"></span>Live on the home page</p>
+      <div class="live">
+        <div class="thumb" id="liveThumb"></div>
+        <dl id="liveInfo"></dl>
+      </div>
+    </section>
+
+    <form class="card" id="videoForm">
+      <p class="kicker">Now showing</p>
+      <h2>Change the video</h2>
+
+      <div>
+        <span class="lbl" id="srcLbl">Video source</span>
+        <div class="tabs" role="radiogroup" aria-labelledby="srcLbl">
+          <input type="radio" name="src" id="srcYt" value="youtube" checked><label for="srcYt">YouTube link</label>
+          <input type="radio" name="src" id="srcUp" value="upload"><label for="srcUp">Upload video</label>
+          <input type="radio" name="src" id="srcDef" value="default"><label for="srcDef">Original trailer</label>
+        </div>
+      </div>
+
+      <div class="pane" id="paneYt">
+        <div class="row two">
+          <div>
+            <label for="ytUrl">YouTube link</label>
+            <input type="url" id="ytUrl" placeholder="https://youtube.com/shorts/…  or  https://youtu.be/…" inputmode="url">
+          </div>
+          <div>
+            <label for="ytOrient">Shape</label>
+            <select id="ytOrient">
+              <option value="">Auto (Shorts = tall)</option>
+              <option value="vertical">Tall 9:16</option>
+              <option value="horizontal">Wide 16:9</option>
+            </select>
+          </div>
+        </div>
+        <p class="hint">Paste the link from YouTube's Share button. Shorts, regular videos and links with a start time all work.</p>
+      </div>
+
+      <div class="pane" id="paneUp" hidden>
+        <label class="drop" id="drop" for="file">
+          <strong id="dropTitle">Choose a video or drop it here</strong>
+          <span id="dropSub">MP4 works best everywhere · up to 500 MB</span>
+          <input type="file" id="file" accept="video/mp4,video/webm,video/quicktime">
+        </label>
+        <div class="row two">
+          <div class="bar" aria-hidden="true" style="align-self:center"><i id="barFill"></i></div>
+          <div>
+            <label for="upOrient">Shape</label>
+            <select id="upOrient">
+              <option value="vertical">Tall 9:16</option>
+              <option value="horizontal">Wide 16:9</option>
+            </select>
+          </div>
+        </div>
+        <p class="hint">TikTok exports are already MP4. iPhone .MOV files may not play in every browser; export as MP4 if you can.</p>
+      </div>
+
+      <div class="pane" id="paneDef" hidden>
+        <p class="hint">Shows the original Murder &amp; Motive / Nice Quiet Neighbor trailer that ships with the site.</p>
+      </div>
+
+      <div>
+        <label for="vTitle">Heading (optional)</label>
+        <input type="text" id="vTitle" maxlength="120" placeholder="The Trailer">
+      </div>
+
+      <button class="btn red" type="submit" id="saveBtn">Put it on the home page</button>
+      <div class="msg" id="saveMsg" hidden></div>
+    </form>
+
+
+    <form class="card" id="caseForm">
+      <p class="kicker">Spotlight</p>
+      <h2>Case of the Week</h2>
+      <label class="check"><input type="checkbox" id="cwOn"> Show on the home page</label>
+      <div class="row half">
+        <div><label for="cwName">Case name</label><input type="text" id="cwName" maxlength="120" placeholder="The Zodiac Killer"></div>
+        <div><label for="cwStatus">Stamp</label>
+          <select id="cwStatus"><option>Unsolved</option><option>Solved</option><option>Cold case</option><option>Open</option><option>Wrongful conviction</option><option>Disputed</option></select></div>
+      </div>
+      <div class="row half">
+        <div><label for="cwLoc">Location</label><input type="text" id="cwLoc" maxlength="120" placeholder="San Francisco Bay Area"></div>
+        <div><label for="cwYears">Years</label><input type="text" id="cwYears" maxlength="60" placeholder="1968–1969"></div>
+      </div>
+      <div><label for="cwSummary">Summary</label><textarea id="cwSummary" maxlength="1500" placeholder="A few sentences on the case and the question you want people to dig into this week."></textarea></div>
+      <div>
+        <span class="lbl">Photo</span>
+        <div class="imgrow">
+          <img id="cwImgPrev" alt="" hidden>
+          <span class="btn ghost file-btn">Upload photo<input type="file" id="cwImgFile" accept="image/jpeg,image/png,image/webp"></span>
+          <button class="mini del" type="button" id="cwImgDel" hidden>Remove photo</button>
+        </div>
+        <p class="hint" style="margin-top:8px">Uploads get resized automatically. Avoid graphic crime-scene photos.</p>
+      </div>
+      <div><label for="cwThread">Discord thread link</label><input type="url" id="cwThread" placeholder="https://discord.com/channels/…"><p class="hint" style="margin-top:6px">In Discord, right-click the thread → Copy Link.</p></div>
+      <button class="btn red" type="submit">Save case</button>
+      <div class="msg" id="cwMsg" hidden></div>
+    </form>
+
+    <section class="card" id="eventsCard">
+      <p class="kicker">Calendar</p>
+      <h2>On the Docket</h2>
+      <ul class="evlist" id="evList"></ul>
+      <form id="evForm" style="display:flex;flex-direction:column;gap:14px">
+        <div class="row half">
+          <div><label for="evTitle">Event</label><input type="text" id="evTitle" maxlength="120" placeholder="Watch party: Making a Murderer, ep. 1–2"></div>
+          <div><label for="evWhen">Date &amp; time (your time)</label><input type="datetime-local" id="evWhen"></div>
+        </div>
+        <div class="row half">
+          <div><label for="evWhere">Where</label><input type="text" id="evWhere" maxlength="120" placeholder="Discord · Case Files voice"></div>
+          <div><label for="evLink">Link (optional)</label><input type="url" id="evLink" placeholder="Discord event link"></div>
+        </div>
+        <div><label for="evDetails">Details (optional)</label><input type="text" id="evDetails" maxlength="400"></div>
+        <div class="btnrow">
+          <button class="btn red" type="submit" id="evSave">Add event</button>
+          <button class="btn ghost" type="button" id="evCancel" hidden>Cancel edit</button>
+          <button class="btn ghost" type="button" id="evClear">Clear past events</button>
+        </div>
+      </form>
+      <div class="msg" id="evMsg" hidden></div>
+    </section>
+
+    <form class="card" id="hofForm">
+      <p class="kicker">Leaderboards</p>
+      <h2>Hall of Fame</h2>
+      <p class="hint">Reads the top 5 straight from each game's Firebase leaderboard. Find the project ID in Firebase under Project settings. The collection is the name you see in Firestore Database, for example <code>scores</code> or <code>weeks/2026-W45/entries</code>. Leave a game blank to hide it.</p>
+      <div id="hofBoards" style="display:flex;flex-direction:column;gap:14px"></div>
+      <button class="btn red" type="submit">Save leaderboards</button>
+      <div class="msg" id="hofMsg" hidden></div>
+    </form>
+
+    <form class="card" id="aboutForm">
+      <p class="kicker">The community</p>
+      <h2>Who we are</h2>
+      <div><label for="abTitle">Heading</label><input type="text" id="abTitle" maxlength="80"></div>
+      <div><label for="abBody">About the community</label><textarea id="abBody" maxlength="1500" rows="5"></textarea></div>
+      <div><label for="abRules">Our code (one rule per line)</label><textarea id="abRules" rows="6"></textarea></div>
+      <button class="btn red" type="submit">Save</button>
+      <div class="msg" id="abMsg" hidden></div>
+    </form>
+
+    <form class="card" id="socialForm">
+      <p class="kicker">Footer</p>
+      <h2>Social links</h2>
+      <p class="hint">Full profile links. Leave any blank to hide it. Discord always shows.</p>
+      <div class="row half">
+        <div><label for="soTiktok">TikTok</label><input type="url" id="soTiktok" placeholder="https://www.tiktok.com/@…"></div>
+        <div><label for="soYoutube">YouTube</label><input type="url" id="soYoutube" placeholder="https://www.youtube.com/@…"></div>
+        <div><label for="soInstagram">Instagram</label><input type="url" id="soInstagram" placeholder="https://www.instagram.com/…"></div>
+        <div><label for="soX">X</label><input type="url" id="soX" placeholder="https://x.com/…"></div>
+        <div><label for="soTwitch">Twitch</label><input type="url" id="soTwitch" placeholder="https://www.twitch.tv/…"></div>
+      </div>
+      <button class="btn red" type="submit">Save links</button>
+      <div class="msg" id="soMsg" hidden></div>
+    </form>
+
+    <section class="card" id="feedCard">
+      <p class="kicker">From the Discord · #updates</p>
+      <h2>Case updates feed</h2>
+      <p><span class="status" id="feedStatus">Checking…</span></p>
+      <p class="hint" id="feedHint"></p>
+    </section>
+  </div>
+</main>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var KEY = 'bta-admin';
+  var pw = '';
+  try { pw = sessionStorage.getItem(KEY) || ''; } catch(e){}
+
+  function api(path, opts){
+    opts = opts || {};
+    opts.headers = Object.assign({'x-admin-password': pw}, opts.headers || {});
+    return fetch(path, opts).then(function(r){
+      return r.json().catch(function(){ return {}; }).then(function(d){
+        if (!r.ok) throw new Error(d.error || ('Request failed (' + r.status + ').'));
+        return d;
+      });
+    });
+  }
+  function show(el, text, kind){ el.hidden = false; el.className = 'msg ' + (kind || ''); el.textContent = text; }
+
+  /* ---------- login ---------- */
+  function unlock(){
+    $('login').hidden = true; $('panel').hidden = false; $('topActions').hidden = false;
+    loadLive(); loadFeed(); loadContent();
+  }
+  function lock(){
+    pw = ''; try { sessionStorage.removeItem(KEY); } catch(e){}
+    $('panel').hidden = true; $('topActions').hidden = true; $('login').hidden = false; $('pw').value = '';
+  }
+  $('login').addEventListener('submit', function(e){
+    e.preventDefault();
+    pw = $('pw').value; $('loginBtn').disabled = true; $('loginMsg').hidden = true;
+    api('/api/config', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({check:true})})
+      .then(function(){ try { sessionStorage.setItem(KEY, pw); } catch(e){} unlock(); })
+      .catch(function(err){ show($('loginMsg'), err.message === 'Wrong password.' ? 'That password didn’t work.' : err.message, 'err'); })
+      .then(function(){ $('loginBtn').disabled = false; });
+  });
+  $('logout').addEventListener('click', lock);
+  if (pw) {
+    api('/api/config', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({check:true})})
+      .then(unlock).catch(lock);
+  }
+
+  /* ---------- live status ---------- */
+  function loadLive(){
+    fetch('/api/config', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(cfg){
+      var v = cfg.video || {source:'default'};
+      var thumb = $('liveThumb');
+      thumb.className = 'thumb' + (v.orientation === 'horizontal' ? ' h' : '');
+      var src = v.source === 'youtube' ? 'YouTube' : v.source === 'upload' ? 'Uploaded video' : 'Original trailer';
+      if (v.source === 'youtube') thumb.innerHTML = '<img src="https://i.ytimg.com/vi/' + encodeURIComponent(v.youtubeId) + '/hqdefault.jpg" alt="">';
+      else if (v.source === 'upload') thumb.innerHTML = '<video src="/api/video/' + encodeURIComponent(v.uploadId) + '#t=0.5" muted playsinline preload="metadata"></video>';
+      else thumb.innerHTML = '<img src="/assets/trailer-poster.jpg" alt="">';
+      var rows = [['Source', src], ['Shape', v.orientation === 'horizontal' ? 'Wide 16:9' : 'Tall 9:16'], ['Heading', v.title || 'The Trailer']];
+      if (v.source === 'youtube') rows.splice(1, 0, ['Video', 'youtu.be/' + v.youtubeId + (v.start ? '?t=' + v.start : '')]);
+      if (cfg.updatedAt) rows.push(['Changed', new Date(cfg.updatedAt).toLocaleString()]);
+      $('liveInfo').innerHTML = rows.map(function(r){ return '<dt>' + r[0] + '</dt><dd></dd>'; }).join('');
+      var dds = $('liveInfo').querySelectorAll('dd');
+      rows.forEach(function(r, i){ dds[i].textContent = r[1]; });
+      $('vTitle').value = v.title || '';
+    }).catch(function(){ $('liveInfo').innerHTML = '<dt>Status</dt><dd>Couldn’t load the current video.</dd>'; });
+  }
+
+  /* ---------- feed status ---------- */
+  function loadFeed(){
+    fetch('/api/discord', {cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
+      var st = $('feedStatus'), hint = $('feedHint');
+      if (!d.configured) {
+        st.className = 'status off'; st.textContent = 'Not connected';
+        hint.innerHTML = 'Add <code>DISCORD_BOT_TOKEN</code> and <code>DISCORD_CHANNEL_ID</code> in Netlify under Site configuration → Environment variables, then redeploy.';
+      } else if (d.error) {
+        st.className = 'status off'; st.textContent = 'Connected, but not working';
+        hint.textContent = 'Discord says the ' + d.error + '.';
+      } else {
+        st.className = 'status on'; st.textContent = 'Connected · ' + d.messages.length + ' recent post' + (d.messages.length === 1 ? '' : 's');
+        hint.textContent = 'New posts in #updates show up on the home page within about a minute. Nothing to do here.';
+      }
+    }).catch(function(){ $('feedStatus').className = 'status off'; $('feedStatus').textContent = 'Couldn’t check'; });
+  }
+
+  /* ---------- source tabs ---------- */
+  function src(){ return document.querySelector('input[name=src]:checked').value; }
+  document.querySelectorAll('input[name=src]').forEach(function(r){
+    r.addEventListener('change', function(){
+      $('paneYt').hidden = src() !== 'youtube'; $('paneUp').hidden = src() !== 'upload'; $('paneDef').hidden = src() !== 'default';
+      $('saveMsg').hidden = true;
+    });
+  });
+
+  /* ---------- file pick ---------- */
+  var file = null;
+  function pick(f){
+    if (!f) return;
+    if (!/^video\/(mp4|webm|quicktime)$/.test(f.type)) { show($('saveMsg'), 'That file isn’t an MP4, WebM or MOV video.', 'err'); return; }
+    if (f.size > 500*1024*1024) { show($('saveMsg'), 'That video is over 500 MB. Export a smaller version and try again.', 'err'); return; }
+    file = f; $('saveMsg').hidden = true; $('barFill').style.width = '0';
+    $('dropTitle').textContent = f.name;
+    $('dropSub').textContent = (f.size/1048576).toFixed(1) + ' MB · tap to choose a different one';
+    var url = URL.createObjectURL(f), probe = document.createElement('video');
+    probe.preload = 'metadata'; probe.muted = true;
+    probe.onloadedmetadata = function(){ $('upOrient').value = probe.videoWidth > probe.videoHeight ? 'horizontal' : 'vertical'; URL.revokeObjectURL(url); };
+    probe.onerror = function(){ URL.revokeObjectURL(url); };
+    probe.src = url;
+  }
+  $('file').addEventListener('change', function(){ pick(this.files[0]); });
+  var drop = $('drop');
+  ['dragenter','dragover'].forEach(function(t){ drop.addEventListener(t, function(e){ e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave','drop'].forEach(function(t){ drop.addEventListener(t, function(e){ e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function(e){ pick(e.dataTransfer.files[0]); });
+
+  function sendChunk(id, i, blob, tries){
+    return api('/api/upload?action=chunk&id=' + id + '&index=' + i, {method:'POST', headers:{'content-type':'application/octet-stream'}, body: blob})
+      .catch(function(err){ if (tries > 1) return new Promise(function(r){ setTimeout(r, 1200); }).then(function(){ return sendChunk(id, i, blob, tries-1); }); throw err; });
+  }
+  function upload(){
+    var msg = $('saveMsg');
+    return api('/api/upload?action=start', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({name:file.name, size:file.size, mime:file.type})})
+      .then(function(s){
+        var size = s.chunkSize, total = Math.ceil(file.size / size), i = 0;
+        function next(){
+          if (i >= total) return Promise.resolve();
+          var blob = file.slice(i*size, Math.min(file.size, (i+1)*size));
+          show(msg, 'Uploading… ' + Math.round(i/total*100) + '%');
+          return sendChunk(s.id, i, blob, 3).then(function(){ i++; $('barFill').style.width = (i/total*100) + '%'; return next(); });
+        }
+        return next().then(function(){
+          show(msg, 'Finishing upload…');
+          return api('/api/upload?action=finish&id=' + s.id + '&total=' + total, {method:'POST'});
+        }).then(function(){ return s.id; });
+      });
+  }
+
+
+  /* ---------- community content ---------- */
+  var content = null;
+  function postContent(section, data, msgEl, okText){
+    show(msgEl, 'Saving…');
+    return api('/api/content', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({section: section, data: data})})
+      .then(function(c){ content = c; show(msgEl, okText || 'Saved. Live on the home page within about 15 seconds.', 'ok'); return c; })
+      .catch(function(err){ show(msgEl, err.message, 'err'); throw err; });
+  }
+  function loadContent(){
+    api('/api/content?full=1', {method:'POST', headers:{'content-type':'application/json'}, body:'{}'}).then(function(c){
+      content = c;
+      var cw = c.caseOfWeek;
+      $('cwOn').checked = !!cw.enabled; $('cwName').value = cw.name; $('cwStatus').value = cw.status || 'Unsolved';
+      $('cwLoc').value = cw.location; $('cwYears').value = cw.years; $('cwSummary').value = cw.summary; $('cwThread').value = cw.threadUrl;
+      cwImageId = cw.imageId || ''; cwImageUrl = cw.imageUrl || ''; showCwImg();
+      drawEvents();
+      drawBoards(c.leaderboards);
+      $('abTitle').value = c.about.title; $('abBody').value = c.about.body; $('abRules').value = (c.about.rules || []).join('\n');
+      $('soTiktok').value = c.socials.tiktok; $('soYoutube').value = c.socials.youtube; $('soInstagram').value = c.socials.instagram; $('soX').value = c.socials.x; $('soTwitch').value = c.socials.twitch;
+    }).catch(function(){});
+  }
+
+  /* case of the week */
+  var cwImageId = '', cwImageUrl = '';
+  function showCwImg(){
+    var src = cwImageId ? '/api/image/' + cwImageId : cwImageUrl;
+    $('cwImgPrev').hidden = !src; $('cwImgDel').hidden = !src; if (src) $('cwImgPrev').src = src;
+  }
+  $('cwImgDel').addEventListener('click', function(){ cwImageId = ''; cwImageUrl = ''; showCwImg(); });
+  $('cwImgFile').addEventListener('change', function(){
+    var f = this.files[0]; if (!f) return;
+    var msg = $('cwMsg'); show(msg, 'Uploading photo…');
+    var img = new Image(), url = URL.createObjectURL(f);
+    img.onload = function(){
+      var scale = Math.min(1, 1400 / Math.max(img.width, img.height));
+      var cv = document.createElement('canvas'); cv.width = Math.round(img.width*scale); cv.height = Math.round(img.height*scale);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height); URL.revokeObjectURL(url);
+      cv.toBlob(function(blob){
+        api('/api/image', {method:'POST', headers:{'content-type':'image/jpeg'}, body: blob})
+          .then(function(r){ cwImageId = r.id; cwImageUrl = ''; showCwImg(); show(msg, 'Photo uploaded. Hit Save case to put it live.', 'ok'); })
+          .catch(function(err){ show(msg, err.message, 'err'); });
+      }, 'image/jpeg', 0.85);
+    };
+    img.onerror = function(){ show(msg, 'That image couldn’t be opened. Try a JPG or PNG.', 'err'); };
+    img.src = url; this.value = '';
+  });
+  $('caseForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    postContent('caseOfWeek', {enabled: $('cwOn').checked, name: $('cwName').value, status: $('cwStatus').value, location: $('cwLoc').value,
+      years: $('cwYears').value, summary: $('cwSummary').value, imageId: cwImageId, imageUrl: cwImageUrl, threadUrl: $('cwThread').value}, $('cwMsg'),
+      $('cwOn').checked ? 'Saved. The case is live on the home page within about 15 seconds.' : 'Saved. It’s hidden from the home page until you tick Show on the home page.').catch(function(){});
+  });
+
+  /* events */
+  var editing = null;
+  function fmt(iso){ return new Date(iso).toLocaleString('en-US', {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}); }
+  function toLocalInput(iso){ var d = new Date(iso), p = function(n){ return String(n).padStart(2,'0'); };
+    return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes()); }
+  function drawEvents(){
+    var evs = (content && content.events) || [], now = Date.now();
+    $('evList').innerHTML = evs.length ? evs.map(function(e, i){
+      return '<li class="' + (Date.parse(e.when) < now - 7200000 ? 'past' : '') + '"><div><div class="t"></div><div class="w"></div></div>' +
+        '<div class="acts"><button class="mini" type="button" data-edit="' + i + '">Edit</button><button class="mini del" type="button" data-del="' + i + '">Delete</button></div></li>';
+    }).join('') : '<li><span class="w">No events yet. Add one below.</span></li>';
+    $('evList').querySelectorAll('li').forEach(function(li, i){
+      if (!evs[i]) return;
+      li.querySelector('.t').textContent = evs[i].title;
+      li.querySelector('.w').textContent = fmt(evs[i].when) + (evs[i].where ? ' · ' + evs[i].where : '') + (Date.parse(evs[i].when) < now - 7200000 ? ' · past' : '');
+    });
+  }
+  function resetEv(){ editing = null; $('evForm').reset(); $('evSave').textContent = 'Add event'; $('evCancel').hidden = true; }
+  $('evCancel').addEventListener('click', resetEv);
+  $('evList').addEventListener('click', function(e){
+    var evs = content.events.slice();
+    var d = e.target.dataset;
+    if (d.del != null) {
+      evs.splice(+d.del, 1);
+      postContent('events', evs, $('evMsg'), 'Event deleted.').then(function(){ resetEv(); drawEvents(); }).catch(function(){});
+    } else if (d.edit != null) {
+      var ev = evs[+d.edit]; editing = ev.id;
+      $('evTitle').value = ev.title; $('evWhen').value = toLocalInput(ev.when); $('evWhere').value = ev.where; $('evLink').value = ev.link; $('evDetails').value = ev.details;
+      $('evSave').textContent = 'Update event'; $('evCancel').hidden = false; $('evTitle').focus();
+    }
+  });
+  $('evForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    if (!$('evTitle').value.trim() || !$('evWhen').value) { show($('evMsg'), 'Give the event a name and a date and time.', 'err'); return; }
+    var ev = {id: editing || Math.random().toString(36).slice(2, 10), title: $('evTitle').value, when: new Date($('evWhen').value).toISOString(),
+      where: $('evWhere').value, link: $('evLink').value, details: $('evDetails').value};
+    var evs = (content.events || []).filter(function(x){ return x.id !== editing; }).concat([ev]);
+    postContent('events', evs, $('evMsg'), editing ? 'Event updated.' : 'Event added.').then(function(){ resetEv(); drawEvents(); }).catch(function(){});
+  });
+  $('evClear').addEventListener('click', function(){
+    var now = Date.now(), evs = (content.events || []).filter(function(x){ return Date.parse(x.when) >= now - 7200000; });
+    postContent('events', evs, $('evMsg'), 'Past events cleared.').then(drawEvents).catch(function(){});
+  });
+
+  /* leaderboards */
+  var BF = [['label','Name shown on the tab'],['projectId','Firebase project ID'],['collection','Collection path'],['nameField','Player name field'],['scoreField','Score field'],['apiKey','Web API key (optional)']];
+  function drawBoards(boards){
+    $('hofBoards').innerHTML = boards.map(function(b, i){
+      return '<fieldset data-b="' + i + '"><legend>Game ' + (i+1) + '</legend><div class="row half">' + BF.map(function(f){
+        return '<div><label for="b' + i + f[0] + '">' + f[1] + '</label><input type="text" id="b' + i + f[0] + '" data-f="' + f[0] + '" autocomplete="off" spellcheck="false"></div>'; }).join('') +
+        '</div><div class="btnrow"><button class="mini" type="button" data-test="' + i + '">Test connection</button></div><div class="lbres" id="lbres' + i + '" hidden></div></fieldset>';
+    }).join('');
+    boards.forEach(function(b, i){ BF.forEach(function(f){ $('b' + i + f[0]).value = b[f[0]] || ''; }); });
+  }
+  function readBoard(i){ var o = {}; BF.forEach(function(f){ o[f[0]] = $('b' + i + f[0]).value.trim(); }); return o; }
+  $('hofBoards').addEventListener('click', function(e){
+    var i = e.target.dataset.test; if (i == null) return;
+    var out = $('lbres' + i); out.hidden = false; out.className = 'lbres'; out.textContent = 'Testing…';
+    api('/api/leaderboard', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(readBoard(+i))})
+      .then(function(r){
+        if (!r.entries.length) { out.textContent = 'Connected, but no scores came back. Check the collection path and score field.'; return; }
+        out.innerHTML = 'Connected. Top ' + r.entries.length + ':<ol></ol>';
+        r.entries.forEach(function(x){ var li = document.createElement('li'); li.textContent = x.name + ' · ' + x.score; out.querySelector('ol').appendChild(li); });
+      })
+      .catch(function(err){ out.className = 'lbres err'; out.textContent = err.message; });
+  });
+  $('hofForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var boards = [0, 1].map(readBoard);
+    postContent('leaderboards', boards, $('hofMsg'), 'Saved. Scores refresh on the home page about once a minute.').catch(function(){});
+  });
+
+  /* about + socials */
+  $('aboutForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    postContent('about', {title: $('abTitle').value, body: $('abBody').value, rules: $('abRules').value.split('\n')}, $('abMsg')).catch(function(){});
+  });
+  $('socialForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    postContent('socials', {tiktok: $('soTiktok').value, youtube: $('soYoutube').value, instagram: $('soInstagram').value, x: $('soX').value, twitch: $('soTwitch').value}, $('soMsg')).catch(function(){});
+  });
+
+  /* ---------- save ---------- */
+  $('videoForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var btn = $('saveBtn'), msg = $('saveMsg'), s = src();
+    var body = {source: s, title: $('vTitle').value.trim()};
+    var go;
+    if (s === 'youtube') {
+      if (!$('ytUrl').value.trim()) { show(msg, 'Paste a YouTube link first.', 'err'); return; }
+      body.url = $('ytUrl').value.trim(); if ($('ytOrient').value) body.orientation = $('ytOrient').value;
+      go = Promise.resolve();
+    } else if (s === 'upload') {
+      if (!file) { show(msg, 'Choose a video to upload first.', 'err'); return; }
+      body.orientation = $('upOrient').value;
+      go = upload().then(function(id){ body.uploadId = id; });
+    } else { go = Promise.resolve(); }
+
+    btn.disabled = true;
+    go.then(function(){
+      show(msg, 'Saving…');
+      return api('/api/config', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body)});
+    }).then(function(){
+      show(msg, 'Live on the home page. Visitors see it within about 15 seconds.', 'ok');
+      loadLive();
+    }).catch(function(err){ show(msg, err.message, 'err'); })
+      .then(function(){ btn.disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>

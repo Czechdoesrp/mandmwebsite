@@ -1,0 +1,76 @@
+/* Layout: evidence board on black — logo up top, crime-tape bands divide sections, video pinned like the logo's photo, Discord posts as case notes, games filed as exhibits */
+:root{
+  color-scheme:dark;
+  --night:#0a0808;      /* logo backdrop */
+  --board:#141010;      /* cork-in-the-dark surface */
+  --board-2:#1b1515;
+  --bone:#ece4d4;       /* distressed white lettering */
+  --muted:#a59a8e;
+  --rule:#2e2524;
+  --blood:#c3141d;      /* "Alibi" red */
+  --blood-deep:#6d0d11;
+  --tape:#e2b33a;       /* crime-scene tape */
+  --tape-ink:#16120a;
+  --paper:#d9ccb0;      /* torn photo paper */
+  --paper-ink:#2a2014;
+  --discord:#5865f2;
+  --f-display:'IM Fell English SC','IM Fell English',Georgia,'Times New Roman',serif;
+  --f-body:'Libre Franklin','Helvetica Neue',Arial,sans-serif;
+  --f-type:'Special Elite','Courier New',Courier,monospace;
+  --f-tape:'Oswald','Arial Narrow',Impact,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;background:var(--night);color:var(--bone);
+  font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(circle at 78% 6%, rgba(195,20,29,.16), transparent 34%),
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(236,228,212,.06), transparent 70%);
+}
+img{max-width:100%}
+[hidden]{display:none!important}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--tape);outline-offset:3px}
+.wrap{
+  width:100%;max-width:1120px;margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- labels ---------- */
+.kicker{font-family:var(--f-type);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0}
+.kicker .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blood);margin-right:8px;vertical-align:1px;box-shadow:0 0 0 3px rgba(195,20,29,.25)}
+.h2{font-family:var(--f-display);font-weight:400;font-size:clamp(30px,5vw,44px);line-height:1.05;margin:4px 0 0;text-wrap:balance;letter-spacing:.01em}
+.h2 em{font-style:normal;color:var(--blood)}
+
+/* ---------- crime tape ---------- */
+.tape{
+  position:relative;background:var(--tape);color:var(--tape-ink);overflow:hidden;white-space:nowrap;
+  font-family:var(--f-tape);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;
+  padding-block:7px;border-block:2px solid #b88a1d;
+  box-shadow:0 6px 18px rgba(0,0,0,.5);
+}
+.tape-wrap{overflow:hidden;padding-block:10px}
+.tape.tilt{transform:rotate(-1.4deg);margin-inline:-12px}
+.tape .run{display:inline-flex;gap:28px;padding-left:28px;animation:tape 38s linear infinite}
+.tape .run span::after{content:"◆";margin-left:28px;font-size:10px;vertical-align:2px}
+@keyframes tape{to{transform:translateX(-50%)}}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;
+  font-family:var(--f-body);font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;
+  padding:13px 18px;border-radius:3px;border:0;background:var(--bone);color:var(--night);
+  transition:transform .12s ease, filter .12s ease;
+}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.btn.red{background:var(--blood);color:#fff}
+.btn.ghost{background:transparent;color:var(--bone);border:1px solid var(--rule)}
+.btn.discord{background:var(--discord);color:#fff}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  .tape .run{animation:none}
+  *{transition:none!important}
+}
