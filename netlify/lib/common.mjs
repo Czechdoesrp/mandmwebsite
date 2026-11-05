@@ -75,7 +75,7 @@ export const DEFAULT_CONTENT = {
       "Mark spoilers for new documentaries and podcasts.",
     ],
   },
-  socials: { tiktok: "", youtube: "", instagram: "", x: "", twitch: "" },
+  socials: { discord: "", tiktok: "", youtube: "", instagram: "", x: "", twitch: "" },
   leaderboards: [
     { label: "Murder & Motive", projectId: "", collection: "", nameField: "name", scoreField: "score", apiKey: "" },
     { label: "Nice Quiet Neighbor", projectId: "", collection: "", nameField: "name", scoreField: "score", apiKey: "" },

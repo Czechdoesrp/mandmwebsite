@@ -264,7 +264,8 @@
     <form class="card" id="socialForm">
       <p class="kicker">Footer</p>
       <h2>Social links</h2>
-      <p class="hint">Full profile links. Leave any blank to hide it. Discord always shows.</p>
+      <p class="hint">Full profile links. Leave any blank to hide it.</p>
+      <div><label for="soDiscord">Discord invite</label><input type="url" id="soDiscord" placeholder="https://discord.gg/…"><p class="hint" style="margin-top:6px">Used by every Join the Discord button on the site. In Discord: right-click your server → Invite People → Edit invite link → set it to never expire, then copy.</p></div>
       <div class="row half">
         <div><label for="soTiktok">TikTok</label><input type="url" id="soTiktok" placeholder="https://www.tiktok.com/@…"></div>
         <div><label for="soYoutube">YouTube</label><input type="url" id="soYoutube" placeholder="https://www.youtube.com/@…"></div>
@@ -435,7 +436,7 @@
       drawEvents();
       drawBoards(c.leaderboards);
       $('abTitle').value = c.about.title; $('abBody').value = c.about.body; $('abRules').value = (c.about.rules || []).join('\n');
-      $('soTiktok').value = c.socials.tiktok; $('soYoutube').value = c.socials.youtube; $('soInstagram').value = c.socials.instagram; $('soX').value = c.socials.x; $('soTwitch').value = c.socials.twitch;
+      $('soDiscord').value = c.socials.discord || ''; $('soTiktok').value = c.socials.tiktok; $('soYoutube').value = c.socials.youtube; $('soInstagram').value = c.socials.instagram; $('soX').value = c.socials.x; $('soTwitch').value = c.socials.twitch;
     }).catch(function(){});
   }
 
@@ -551,7 +552,7 @@
   });
   $('socialForm').addEventListener('submit', function(e){
     e.preventDefault();
-    postContent('socials', {tiktok: $('soTiktok').value, youtube: $('soYoutube').value, instagram: $('soInstagram').value, x: $('soX').value, twitch: $('soTwitch').value}, $('soMsg')).catch(function(){});
+    postContent('socials', {discord: $('soDiscord').value, tiktok: $('soTiktok').value, youtube: $('soYoutube').value, instagram: $('soInstagram').value, x: $('soX').value, twitch: $('soTwitch').value}, $('soMsg')).catch(function(){});
   });
 
   /* ---------- save ---------- */

@@ -412,7 +412,7 @@
 
   function renderFeed(data){
     var feed = $('feed');
-    if (data && data.invite) { $('joinTop').href = data.invite; }
+    
     if (!data || !data.configured) {
       feed.innerHTML = '<li class="note"><strong>No updates yet</strong>Case updates from the Discord will show up here. Join the server to get them first.</li>';
       return;
@@ -488,7 +488,9 @@
     var so = c.socials || {};
     var links = Object.keys(names).filter(function(k){ return so[k]; })
       .map(function(k){ return '<a href="' + esc(so[k]) + '" target="_blank" rel="noopener">' + names[k] + '</a>'; }).join('');
-    $('socials').innerHTML = links + '<a href="' + esc($('joinTop').href) + '" target="_blank" rel="noopener">Discord</a>';
+    var invite = so.discord || 'https://discord.gg/murderandmotive';
+    $('joinTop').href = invite; $('joinAbout').href = invite;
+    $('socials').innerHTML = links + '<a href="' + esc(invite) + '" target="_blank" rel="noopener">Discord</a>';
   }
 
   function syncDuo(){
