@@ -117,7 +117,7 @@
   <div id="panel" hidden>
 
     <nav class="jump" aria-label="Sections">
-      <a href="#videoForm">Video</a><a href="#caseForm">Case of the Week</a><a href="#eventsCard">Events</a><a href="#hofForm">Hall of Fame</a><a href="#aboutForm">Who we are</a><a href="#socialForm">Social links</a><a href="#feedCard">Discord feed</a>
+      <a href="#videoForm">Video</a><a href="#caseForm">Case of the Month</a><a href="#eventsCard">Events</a><a href="#hofForm">Hall of Fame</a><a href="#aboutForm">Who we are</a><a href="#socialForm">Social links</a><a href="#feedCard">Discord feed</a>
     </nav>
     <section class="card">
       <p class="kicker"><span class="dot"></span>Live on the home page</p>
@@ -193,7 +193,7 @@
 
     <form class="card" id="caseForm">
       <p class="kicker">Spotlight</p>
-      <h2>Case of the Week</h2>
+      <h2>Case of the Month</h2>
       <label class="check"><input type="checkbox" id="cwOn"> Show on the home page</label>
       <div class="row half">
         <div><label for="cwName">Case name</label><input type="text" id="cwName" maxlength="120" placeholder="The Zodiac Killer"></div>
@@ -204,7 +204,7 @@
         <div><label for="cwLoc">Location</label><input type="text" id="cwLoc" maxlength="120" placeholder="San Francisco Bay Area"></div>
         <div><label for="cwYears">Years</label><input type="text" id="cwYears" maxlength="60" placeholder="1968–1969"></div>
       </div>
-      <div><label for="cwSummary">Summary</label><textarea id="cwSummary" maxlength="1500" placeholder="A few sentences on the case and the question you want people to dig into this week."></textarea></div>
+      <div><label for="cwSummary">Summary</label><textarea id="cwSummary" maxlength="1500" placeholder="A few sentences on the case and the question you want people to dig into this month."></textarea></div>
       <div>
         <span class="lbl">Photo</span>
         <div class="imgrow">
@@ -440,7 +440,7 @@
     }).catch(function(){});
   }
 
-  /* case of the week */
+  /* case of the month */
   var cwImageId = '', cwImageUrl = '';
   function showCwImg(){
     var src = cwImageId ? '/api/image/' + cwImageId : cwImageUrl;

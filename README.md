@@ -25,7 +25,7 @@ Posts show up on the site within about a minute.
 
 ## Admin page sections (beyondthealibi.com/admin)
 - **Video**: YouTube link, upload, or the original trailer.
-- **Case of the Week**: name, stamp, location, years, summary, photo, Discord thread link. Tick "Show on the home page" to publish.
+- **Case of the Month**: name, stamp, location, years, summary, photo, Discord thread link. Tick "Show on the home page" to publish.
 - **On the Docket**: add, edit and delete events. Times are entered in your time zone and shown in each visitor's.
 - **Hall of Fame**: connects to each game's Firebase leaderboard (project ID, collection path, name field, score field). Use "Test connection" before saving. Your Firestore rules must allow public reads of that collection.
 - **Who we are**: heading, community description and the "Our code" rules (one per line).

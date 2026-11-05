@@ -131,7 +131,7 @@
   .bag.b .bag-top .zip{background:repeating-linear-gradient(90deg,rgba(195,20,29,.6) 0 6px,transparent 6px 10px)}
 
 
-  /* ---------- case of the week: manila case folder ---------- */
+  /* ---------- case of the month: manila case folder ---------- */
   .cotw{padding-top:34px}
   .folder{
     position:relative;background:var(--paper);color:var(--paper-ink);border-radius:0 6px 6px 6px;
@@ -139,7 +139,7 @@
     box-shadow:0 30px 60px rgba(0,0,0,.6), inset 0 0 60px rgba(120,90,40,.28);
   }
   .folder::before{
-    content:"CASE OF THE WEEK";position:absolute;left:0;top:-32px;height:32px;display:flex;align-items:center;
+    content:"CASE OF THE MONTH";position:absolute;left:0;top:-32px;height:32px;display:flex;align-items:center;
     background:var(--paper);color:var(--paper-ink);padding:0 18px;border-radius:6px 6px 0 0;
     font-family:var(--f-tape);font-weight:700;font-size:13px;letter-spacing:.2em;
   }
@@ -262,7 +262,7 @@
     </div>
   </section>
 
-  <section class="cotw" id="cotw" aria-label="Case of the week" hidden></section>
+  <section class="cotw" id="cotw" aria-label="Case of the month" hidden></section>
 
   <section class="duo" id="duo" hidden>
     <div class="col" id="docketCol" hidden>
@@ -454,7 +454,7 @@
         .map(function(f){ return '<div><dt>' + f[0] + '</dt><dd>' + esc(f[1]) + '</dd></div>'; }).join('');
       box.innerHTML = '<div class="folder' + (img ? ' has-img' : '') + '">' +
         (img ? '<figure class="pic" style="margin:0"><img src="' + esc(img) + '" alt="' + esc(cw.name) + '" loading="lazy"><span>' + esc(cw.name) + '</span></figure>' : '') +
-        '<div class="txt"><span class="stamp' + (cw.status === 'Solved' ? ' solved' : '') + '">' + esc(cw.status || 'Unsolved') + '</span><p class="lbl">This week in the Discord</p><h3>' + esc(cw.name) + '</h3>' +
+        '<div class="txt"><span class="stamp' + (cw.status === 'Solved' ? ' solved' : '') + '">' + esc(cw.status || 'Unsolved') + '</span><p class="lbl">This month in the Discord</p><h3>' + esc(cw.name) + '</h3>' +
         (facts ? '<dl class="facts">' + facts + '</dl>' : '') +
         (cw.summary ? '<p class="summary">' + esc(cw.summary) + '</p>' : '') +
         (cw.threadUrl ? '<a class="btn discord" href="' + esc(cw.threadUrl) + '" target="_blank" rel="noopener">Join the discussion</a>' : '') +
